@@ -104,11 +104,11 @@ public class CreatorField extends AbstractField {
         
         // field creatorName (1)
         
-        if (this.creatorName == null) {
+        if (this.creatorName != null) {
             Element n = doc.createElement("creatorName");
             n.appendChild(doc.createTextNode(this.creatorName));
             // field nameType (0..1)
-            if (this.nameType == null) {
+            if (this.nameType != null) {
                 Attr attr = doc.createAttribute("nameType");
                 attr.setValue(nameType);
                 n.appendChild(attr);
@@ -117,14 +117,14 @@ public class CreatorField extends AbstractField {
         }
         
         // field givenName (0..1)
-        if (this.givenName == null) {
+        if (this.givenName != null) {
             Element n = doc.createElement("givenName");
             n.appendChild(doc.createTextNode(this.givenName));
             field.appendChild(n);
         }
         
         // field familyName (0..1)
-        if (this.familyName == null) {
+        if (this.familyName != null) {
             Element n = doc.createElement("familyName");
             n.appendChild(doc.createTextNode(this.familyName));
             field.appendChild(n);
