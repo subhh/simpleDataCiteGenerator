@@ -5,7 +5,12 @@
  */
 package datacitegenerator.FieldTypes;
 
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  *
@@ -18,17 +23,35 @@ public class TitleField extends AbstractField {
     // mandatory multiple
     
     // optional single
-    private TitleTypeField titleType;
+    private String titleLang;
+    private String titleType;
+    private Map<String,String> h_types;
     
     // optional multiple
+    
+    // Constructor
+    
+    public TitleField () {
+        titleLang = "de-DE";
+        titleType = null;
+        
+        h_types = new HashMap<>();
+        h_types.put("AlternatveTitle", "true");
+        h_types.put("SubTitle", "true");
+        h_types.put("TranslatedTitle", "true");
+        h_types.put("Other", "true");
+    }
     
     // Methods
     
     // getter, setter, adder
     
     // ID 3.1
-    public void setTitleType(TitleTypeField s) { this.titleType = s; }
-    public TitleTypeField getIdentifier() { return this.titleType; }
+    public void setTitleType(String s) { this.titleType = s; }
+    public String getTitleType() { return this.titleType; }
+    
+    public void setTitleLanguage(String s) { this.titleLang = s; }
+    public String getTitleLanguage() { return this.titleLang; }
     
     // abstract
     
@@ -44,10 +67,30 @@ public class TitleField extends AbstractField {
             r = r.concat(this.getName() + ": No value defined.\n");
         }
         
-        if (titleType != null) {
-            r = r.concat(titleType.validate());
-        } 
+        if ((this.titleType != null) && (h_types.get(this.titleType) != null)) {
+            r = r.concat(this.getName() + ": Wrong/missing title type.\n");
+        }
         
         return r;
+    }
+    
+    @Override
+    public Element createXML(Document doc){
+        Element field = doc.createElement(this.getName());
+        field.appendChild(doc.createTextNode(this.getValue()));
+        
+        if (this.titleLang != null) {
+            Attr attr = doc.createAttribute("xml:lang");
+            attr.setValue(titleLang);
+            field.setAttributeNode(attr);
+        }
+        
+        if (this.titleType != null) {
+            Attr attr = doc.createAttribute("titleType");
+            attr.setValue(titleType);
+            field.setAttributeNode(attr);
+        }
+                
+        return field;
     }
 }

@@ -5,7 +5,11 @@
  */
 package datacitegenerator.FieldTypes;
 
+import java.net.URI;
 import java.util.LinkedList;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  *
@@ -14,24 +18,24 @@ import java.util.LinkedList;
 public class NameIdentifierField extends AbstractField {
     
     // mandatory single
-    private NameIdentifierSchemeField nameIdentifierScheme = null;
+    private String nameIdentifierScheme = null;
         
     // mandatory multiple
     
     // optional single
-    private SchemeURIField schemeURI = null;
+    private URI schemeURI = null;
     
     // optional multiple
 
     // getter, setter, adder
     
     // ID 2.4.1
-    public void setNameIdentifierScheme(NameIdentifierSchemeField s) { this.nameIdentifierScheme = s; }
-    public NameIdentifierSchemeField getCreatorName() { return this.nameIdentifierScheme; }
+    public void setNameIdentifierScheme(String s) { this.nameIdentifierScheme = s; }
+    public String getCreatorName() { return this.nameIdentifierScheme; }
     
     // ID 2.4.2
-    public void setSchemeURI(SchemeURIField s) { this.schemeURI = s; }
-    public SchemeURIField getSchemeURI() { return this.schemeURI; }
+    public void setSchemeURI(URI s) { this.schemeURI = s; }
+    public URI getSchemeURI() { return this.schemeURI; }
     
     // abstract
     @Override
@@ -47,16 +51,29 @@ public class NameIdentifierField extends AbstractField {
         }
         
         if (nameIdentifierScheme == null) {
-            r = r.concat(this.getName() + ": No nameIdentifierScheme defined.\n");
-        } else {
-            r = r.concat(this.nameIdentifierScheme.validate());
-        }
-        
-        if (schemeURI != null) {
-            r = r.concat(this.schemeURI.validate());
+            r = r.concat(this.getName() + " " + this.value + ": No nameIdentifierScheme defined.\n");
         }
         
         return r;
     }
     
+    public Element createXML(Document doc){
+        Element field = doc.createElement(this.getName());
+        
+        if (nameIdentifierScheme != null) {
+            Attr attr = doc.createAttribute("nameIdentifierScheme");
+            attr.setValue(nameIdentifierScheme);
+            field.setAttributeNode(attr);
+        }
+        
+        if (schemeURI != null) {
+            Attr attr = doc.createAttribute("schemeURI");
+            attr.setValue(schemeURI.toString());
+            field.setAttributeNode(attr);
+        }
+        
+        field.appendChild(doc.createTextNode(this.getValue()));
+                
+        return field;
+    }
 }

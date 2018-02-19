@@ -5,17 +5,21 @@
  */
 package datacitegenerator.FieldTypes;
 
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 /**
  *
  * @author jfmaas
  */
 public class IdentifierField extends AbstractField {
     
-    IdentifierTypeField i = null;
+    String identifierType = null;
     
     // getters,  setters and adders
-    public IdentifierTypeField getIdentifierType() { return i; }
-    public void setIdentifierType(IdentifierTypeField s) { this.i = s; }
+    public String getIdentifierType() { return identifierType; }
+    public void setIdentifierType(String s) { this.identifierType = s; }
     
     // abstract
     @Override
@@ -26,10 +30,8 @@ public class IdentifierField extends AbstractField {
     @Override
     public String validate() {
         String r = "";
-        if (i == null) {
+        if (identifierType == null) {
             r = r.concat(this.getName() + ": No IdentifierFieldType defined.\n");
-        } else {
-            r = r.concat(i.validate());
         }
         
         if (value == null) {
@@ -37,5 +39,20 @@ public class IdentifierField extends AbstractField {
         }
         
         return r;
+    }
+    
+    @Override
+    public Element createXML(Document doc){
+        Element field = doc.createElement(this.getName());
+        
+        if (this.getIdentifierType() != null) {
+            Attr attr = doc.createAttribute("identifierType");
+            attr.setValue(this.getIdentifierType());
+            field.setAttributeNode(attr);
+        }
+        
+        field.appendChild(doc.createTextNode(this.getValue()));
+                
+        return field;
     }
 }

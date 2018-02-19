@@ -5,6 +5,9 @@
  */
 package datacitegenerator.FieldTypes;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 /**
  *
  * @author jfmaas
@@ -28,6 +31,14 @@ public class PublicationYearField extends AbstractField {
         }
         
         return r;
+    }
+    
+    @Override
+    public Element createXML(Document doc){
+        Element field = doc.createElement(this.getName());
+        field.appendChild(doc.createTextNode(this.getValue()));        
+                
+        return field;
     }
     
 }

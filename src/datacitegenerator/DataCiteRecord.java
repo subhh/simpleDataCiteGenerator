@@ -18,17 +18,27 @@ import datacitegenerator.FieldTypes.ResourceTypeField;
 import datacitegenerator.FieldTypes.SubjectField;
 import java.util.LinkedList;
 
+import java.io.File;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+
 /**
  * This class defines the schema for the Datacite metadata format records
  * 
  * @author jfmaas
  */
 public class DataCiteRecord {
-    
-    //Constructor
-    public DataCiteRecord () {
-        this.id = null;
-    }
     
     // DataCite Fields
     
@@ -46,16 +56,29 @@ public class DataCiteRecord {
     private LanguageField language;
     
     // optional multiple
-    private LinkedList <SubjectField> subjects;
+    private LinkedList<SubjectField> subjects;
     private LinkedList<ContributorField> contributors;
     private LinkedList<DateField> dates;
     private LinkedList<AlternateIdentifierField> ais;
     
-    // Methods
-    boolean validate() {
-        return true;
+    //Constructor
+    public DataCiteRecord () {
+        this.id = null;
+        this.publisher = null;
+        this.py = null;
+        this.resourceType = null;
+        
+        creators = new LinkedList<>();
+        titles= new LinkedList<>();
+        
+        language = null;
+        
+        subjects = new LinkedList<>();
+        contributors = new LinkedList<>();
+        dates = new LinkedList<>();
+        ais = new LinkedList<>();
     }
-    
+       
     // getter, setter, adder
     
     // ID 1
@@ -102,4 +125,140 @@ public class DataCiteRecord {
     public void addAlternateIdentifier(AlternateIdentifierField s){ this.ais.add(s); }
     public LinkedList<AlternateIdentifierField> getAlternateIdentifier() { return this.ais; }
     
+    public String validate() {
+        String r = "";
+        Iterator i = null;
+        
+        // Identifier
+        if (id != null) {
+            r = r.concat(id.validate());
+        } else {
+            r = r.concat("No identifier is set!\n");
+        }
+        
+        // creator
+        if (creators.size() < 1) {
+            r = r.concat("No creator specified!\n");
+        } else {
+            i = this.creators.iterator();
+            while(i.hasNext()) {
+                CreatorField f = (CreatorField) i.next();
+                r = r.concat(f.validate());
+            }
+        }
+        
+        // title
+        if (titles.size() < 1) {
+            r = r.concat("No title specified!\n");
+        } else {
+            i = this.titles.iterator();
+            while(i.hasNext()) {
+                TitleField f = (TitleField) i.next();
+                r = r.concat(f.validate());
+            }
+        }
+        
+        // publisher
+        if (publisher != null) {
+            r = r.concat(publisher.validate());
+        } else {
+            r = r.concat("No pulbisher is set!\n");
+        }
+        
+        // publication year
+        if (py != null) {
+            r = r.concat(py.validate());
+        } else {
+            r = r.concat("No pulbication year is set!\n");
+        }
+        
+        // subjects
+        if (subjects.size() > 0) {
+            i = this.titles.iterator();
+            while(i.hasNext()) {
+                SubjectField f = (SubjectField) i.next();
+                r = r.concat(f.validate());
+            }
+        }
+        
+        // contributors
+        if (contributors.size() > 0) {
+            i = this.titles.iterator();
+            while(i.hasNext()) {
+                ContributorField f = (ContributorField) i.next();
+                r = r.concat(f.validate());
+            }
+        }
+        
+        return r;
+    }
+    
+    public void createXML(){
+        
+        try {
+            
+            Iterator i = null;
+
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+
+            // root elements
+            Document doc = docBuilder.newDocument();
+            
+            Element rootElement = doc.createElement("resource");
+            Attr attr = doc.createAttribute("xsi:schemaLocation");
+            attr.setValue("http://datacite.org/schema/kernel-4 http://schema.datacite.org/meta/kernel-4.1/metadata.xsd");
+            rootElement.setAttributeNode(attr);
+            
+            // add Identifier
+            if (id != null) {
+                rootElement.appendChild(this.id.createXML(doc));
+            }   
+            
+            // add Creators
+            i = this.creators.iterator();
+            while(i.hasNext()) {
+                CreatorField f = (CreatorField) i.next();
+                rootElement.appendChild(f.createXML(doc));
+            }
+            
+            // add titles
+            i = this.titles.iterator();
+            while(i.hasNext()) {
+                TitleField f = (TitleField) i.next();
+                rootElement.appendChild(f.createXML(doc));
+            }
+
+            // add publisher
+            if (id != null) {
+                rootElement.appendChild(this.publisher.createXML(doc));
+            }  
+
+            // add publication year
+            if (id != null) {
+                rootElement.appendChild(this.py.createXML(doc));
+            }      
+            
+            // add subjects
+            i = this.subjects.iterator();
+            while(i.hasNext()) {
+                SubjectField f = (SubjectField) i.next();
+                rootElement.appendChild(f.createXML(doc));
+            }
+            
+            // add contributors
+            i = this.contributors.iterator();
+            while(i.hasNext()) {
+                ContributorField f = (ContributorField) i.next();
+                rootElement.appendChild(f.createXML(doc));
+            }
+            
+            // End
+            doc.appendChild(rootElement);
+        
+        } catch (ParserConfigurationException | TransformerException pce) {
+            pce.printStackTrace();
+	}
+        
+    }
 }
