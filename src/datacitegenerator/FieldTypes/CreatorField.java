@@ -17,7 +17,8 @@ import org.w3c.dom.Element;
  */
 public class CreatorField extends AbstractField {
     
-    public CreatorField() {
+    public CreatorField() {  
+        this.name = "Creator";
         this.creatorName = null;
         this.givenName = null;
         this.familyName = null;
@@ -67,11 +68,6 @@ public class CreatorField extends AbstractField {
     public LinkedList<String> getAffiliations() { return this.affiliations; } 
     
     // abstract
-    
-    @Override
-    public String getName() {
-        return("Creator");
-    }
     
     @Override
     public String validate() {

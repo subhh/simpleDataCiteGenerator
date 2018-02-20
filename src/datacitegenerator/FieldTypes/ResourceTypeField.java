@@ -23,6 +23,8 @@ public class ResourceTypeField extends AbstractField {
     // Constructor
     
     public ResourceTypeField () {
+        name = "ResourceType";
+        
         resourceTypeGeneral = null;
 
         h_types = new HashMap<>();
@@ -47,13 +49,7 @@ public class ResourceTypeField extends AbstractField {
     // getter setter adder
     
     public void setResourceTypeGeneral(String s) { this.resourceTypeGeneral = s;}
-    public String getResourceTypeGeneral() { return this.resourceTypeGeneral; }
-    
-    
-    @Override
-    public String getName() {
-        return("ResourceType");
-    }
+    public String getResourceTypeGeneral() { return this.resourceTypeGeneral; }   
     
     @Override
     public String validate() {

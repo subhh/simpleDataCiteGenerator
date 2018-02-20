@@ -15,18 +15,18 @@ import org.w3c.dom.Element;
  */
 public class IdentifierField extends AbstractField {
     
-    String identifierType = null;
+    String identifierType;
+    
+    public IdentifierField () {
+        name = "Identifier";
+        identifierType = null;
+    }
     
     // getters,  setters and adders
     public String getIdentifierType() { return identifierType; }
     public void setIdentifierType(String s) { this.identifierType = s; }
     
     // abstract
-    @Override
-    public String getName() {
-        return("Identifier");
-    }
-    
     @Override
     public String validate() {
         String r = "";

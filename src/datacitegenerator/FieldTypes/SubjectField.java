@@ -20,10 +20,11 @@ public class SubjectField extends AbstractField {
     private String subjectLang;
     private String subjectScheme;
     private URI schemeURI;
-    private URI subjectURI;
-    
+    private URI subjectURI; 
     
     public SubjectField () {
+            this.name = "Subject";
+            
             subjectLang = "de-DE";
             subjectScheme = null;
             schemeURI = null;
@@ -45,21 +46,6 @@ public class SubjectField extends AbstractField {
     
     public void setValueURI(URI s) { this.subjectURI = s; }
     public URI getValueURI() { return this.subjectURI; }
-    
-    @Override
-    public String getName() {
-        return("Subject");
-    }
-    
-    @Override
-    public String validate() {
-        String r = "";
-        if (value == null) {
-            r = r.concat(this.getName() + ": No value defined.\n");
-        }
-        
-        return r;
-    }
     
     @Override
     public Element createXML(Document doc){
@@ -92,5 +78,4 @@ public class SubjectField extends AbstractField {
         
         return field;
     }
-    
 }

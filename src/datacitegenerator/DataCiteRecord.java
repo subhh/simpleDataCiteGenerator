@@ -16,9 +16,16 @@ import datacitegenerator.FieldTypes.IdentifierField;
 import datacitegenerator.FieldTypes.LanguageField;
 import datacitegenerator.FieldTypes.ResourceTypeField;
 import datacitegenerator.FieldTypes.SubjectField;
-import java.util.LinkedList;
+import datacitegenerator.FieldTypes.SizeField;
+import datacitegenerator.FieldTypes.FormatField;
+import datacitegenerator.FieldTypes.RelatedIdentifierField;
+import datacitegenerator.FieldTypes.VersionField;
 
 import java.io.File;
+
+import java.util.Iterator;
+import java.util.LinkedList;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -54,12 +61,16 @@ public class DataCiteRecord {
     
     // optional single
     private LanguageField language;
+    private VersionField version;
     
     // optional multiple
     private LinkedList<SubjectField> subjects;
     private LinkedList<ContributorField> contributors;
     private LinkedList<DateField> dates;
+    private LinkedList<RelatedIdentifierField> ris;
     private LinkedList<AlternateIdentifierField> ais;
+    private LinkedList<SizeField> sizes;
+    private LinkedList<FormatField> formats;
     
     //Constructor
     public DataCiteRecord () {
@@ -77,6 +88,10 @@ public class DataCiteRecord {
         contributors = new LinkedList<>();
         dates = new LinkedList<>();
         ais = new LinkedList<>();
+        ris = new LinkedList<>();
+        sizes = new LinkedList<>();
+        formats = new LinkedList<>();
+        version = null;
     }
        
     // getter, setter, adder
@@ -120,10 +135,26 @@ public class DataCiteRecord {
     // ID 10
     public void setResourceType(ResourceTypeField s) { this.resourceType = s; }
     public ResourceTypeField getResourceType() { return this.resourceType; }
-    
+        
     // ID 11
     public void addAlternateIdentifier(AlternateIdentifierField s){ this.ais.add(s); }
-    public LinkedList<AlternateIdentifierField> getAlternateIdentifier() { return this.ais; }
+    public LinkedList<AlternateIdentifierField> getAlternateIdentifiers() { return this.ais; }
+    
+    // ID 12
+    public void addRelatedIdentifier(RelatedIdentifierField s){ this.ris.add(s); }
+    public LinkedList<RelatedIdentifierField> getRelatedIdentifiers() { return this.ris; }
+
+    // ID 13
+    public void addSize(SizeField s){ this.sizes.add(s); }
+    public LinkedList<SizeField> getSizes() { return this.sizes; }
+    
+    // ID 14
+    public void addFormat(FormatField s){ this.formats.add(s); }
+    public LinkedList<FormatField> getFormats() { return this.formats; }
+    
+    // ID 15
+    public void setVersion(VersionField s){ this.version = s; }
+    public VersionField getVersion() { return this.version; }
     
     public String validate() {
         String r = "";
@@ -162,14 +193,14 @@ public class DataCiteRecord {
         if (publisher != null) {
             r = r.concat(publisher.validate());
         } else {
-            r = r.concat("No pulbisher is set!\n");
+            r = r.concat("No publisher is set!\n");
         }
         
         // publication year
         if (py != null) {
             r = r.concat(py.validate());
         } else {
-            r = r.concat("No pulbication year is set!\n");
+            r = r.concat("No publication year is set!\n");
         }
         
         // subjects
@@ -188,6 +219,58 @@ public class DataCiteRecord {
                 ContributorField f = (ContributorField) i.next();
                 r = r.concat(f.validate());
             }
+        }
+        
+        // dates
+        if (dates.size() > 0) {
+            i = this.dates.iterator();
+            while(i.hasNext()) {
+                DateField f = (DateField) i.next();
+                r = r.concat(f.validate());
+            }
+        }
+        
+        // language
+        if (language != null) {
+            r = r.concat(language.validate());
+        }
+        
+        // resourcetype
+        if (resourceType == null) {
+            r = r.concat("resourceType not specified!\n");
+        } else {
+            r = r.concat(resourceType.validate());
+        }
+        
+        // alternateIdentifier
+        if (ais.size() > 0) {
+            i = ais.iterator();
+            while(i.hasNext()) {
+                AlternateIdentifierField f = (AlternateIdentifierField) i.next();
+                r = r.concat(f.validate());
+            }
+        }
+        
+        // relatedIdentifier
+        if (ris.size() > 0) {
+            i = ris.iterator();
+            while(i.hasNext()) {
+                RelatedIdentifierField f = (RelatedIdentifierField) i.next();
+                r = r.concat(f.validate());
+            }
+        }
+        
+        // size
+        if (sizes.size() > 0) {
+            i = sizes.iterator();
+            while(i.hasNext()) {
+                SizeField f = (SizeField) i.next();
+                r = r.concat(f.validate());
+            }
+        }
+        // version
+        if (this.version != null) {
+            r = r.concat(this.version.validate());
         }
         
         return r;
@@ -212,7 +295,7 @@ public class DataCiteRecord {
             
             // add Identifier
             if (id != null) {
-                rootElement.appendChild(this.id.createXML(doc));
+                rootElement.appendChild(id.createXML(doc));
             }   
             
             // add Creators
@@ -231,12 +314,12 @@ public class DataCiteRecord {
 
             // add publisher
             if (id != null) {
-                rootElement.appendChild(this.publisher.createXML(doc));
+                rootElement.appendChild(publisher.createXML(doc));
             }  
 
             // add publication year
             if (id != null) {
-                rootElement.appendChild(this.py.createXML(doc));
+                rootElement.appendChild(py.createXML(doc));
             }      
             
             // add subjects
@@ -252,6 +335,56 @@ public class DataCiteRecord {
                 ContributorField f = (ContributorField) i.next();
                 rootElement.appendChild(f.createXML(doc));
             }
+            
+            // add dates
+            i = this.dates.iterator();
+            while(i.hasNext()) {
+                DateField f = (DateField) i.next();
+                rootElement.appendChild(f.createXML(doc));
+            }
+            
+            // language
+            if (language != null) {
+                rootElement.appendChild(language.createXML(doc));
+            }
+            
+            // resourceType
+            if (resourceType != null){
+                rootElement.appendChild(resourceType.createXML(doc));
+            }
+            
+            // add alternateIdentifiers
+            i = this.ais.iterator();
+            while(i.hasNext()) {
+                AlternateIdentifierField f = (AlternateIdentifierField) i.next();
+                rootElement.appendChild(f.createXML(doc));
+            }
+            
+            // add relatedIdentifiers
+            i = this.ris.iterator();
+            while(i.hasNext()) {
+                RelatedIdentifierField f = (RelatedIdentifierField) i.next();
+                rootElement.appendChild(f.createXML(doc));
+            }
+            
+            // add size
+            i = this.sizes.iterator();
+            while(i.hasNext()) {
+                SizeField f = (SizeField) i.next();
+                rootElement.appendChild(f.createXML(doc));
+            }
+            
+            // add format
+            i = this.formats.iterator();
+            while(i.hasNext()) {
+                FormatField f = (FormatField) i.next();
+                rootElement.appendChild(f.createXML(doc));
+            }
+            
+            // add version
+            if (version != null) {
+                rootElement.appendChild(version.createXML(doc));
+            }   
             
             // End
             doc.appendChild(rootElement);

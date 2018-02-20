@@ -5,6 +5,8 @@
  */
 package datacitegenerator.FieldTypes;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -18,15 +20,37 @@ public class DateField extends AbstractField {
     private String dateType = null;
     private String dateInformation = null;
     
+    private Map<String,String> h_types;
+    
+    // mandatory single
+    
     public String getDateType() { return dateType; }
     public void setDateType(String s) { this.dateType = s; }
+    
+    // optional single
     
     public String getDateInformation() { return dateInformation; }
     public void setDateInformation(String s) { this.dateInformation = s; }
     
-    @Override
-    public String getName() {
-        return("Date");
+    public DateField () {
+        
+        this.name = "Date";
+        
+        dateType = null;
+        dateInformation = null;
+        
+        h_types = new HashMap<>();
+        h_types.put("Accepted", "true");
+        h_types.put("Available", "true");
+        h_types.put("Copyrighted", "true");
+        h_types.put("Collected", "true");        
+        h_types.put("Created", "true");        
+        h_types.put("Issued", "true");        
+        h_types.put("Submitted", "true");        
+        h_types.put("Updated", "true");        
+        h_types.put("Valid", "true");        
+        h_types.put("Other", "true");
+        
     }
     
     @Override
@@ -38,6 +62,14 @@ public class DateField extends AbstractField {
         
         if (dateType == null) {
             r = r.concat(this.getName() + ": No dateType defined.\n");
+        } else {
+            if (h_types.get(dateInformation) == null) {
+                r = r.concat(this.getName() 
+                        + " "
+                        + dateInformation
+                        + " "
+                        + " : Wrong dateInformation.\n");
+            }
         }
         
         return r;

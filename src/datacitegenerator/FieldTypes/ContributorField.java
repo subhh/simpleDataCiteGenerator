@@ -36,6 +36,9 @@ public class ContributorField extends AbstractField{
     private LinkedList<String> affiliations;// 0..N
     
     public ContributorField() {
+        
+        this.name = "Creator";
+        
         this.contributorType = null;
         this.contributorName = null;
         this.familyName = null;
@@ -90,11 +93,6 @@ public class ContributorField extends AbstractField{
     public LinkedList<String> getAffiliations() { return this.affiliations; } 
     
     // abstract
-    
-    @Override
-    public String getName() {
-        return("Creator");
-    }
     
     @Override
     public String validate() {

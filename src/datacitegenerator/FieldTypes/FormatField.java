@@ -5,17 +5,13 @@
  */
 package datacitegenerator.FieldTypes;
 
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 /**
  *
  * @author jfmaas
  */
-public class PublisherField extends AbstractField {
+public class FormatField extends AbstractField {
     
-    public PublisherField () {
-        this.name = "Publisher";
+    public FormatField() {
+        this.name = "Format";
     }
 }

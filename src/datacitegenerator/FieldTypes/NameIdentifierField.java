@@ -18,14 +18,20 @@ import org.w3c.dom.Element;
 public class NameIdentifierField extends AbstractField {
     
     // mandatory single
-    private String nameIdentifierScheme = null;
+    private String nameIdentifierScheme;
         
     // mandatory multiple
     
     // optional single
-    private URI schemeURI = null;
+    private URI schemeURI;
     
     // optional multiple
+    
+    public NameIdentifierField() {
+        name ="nameIdentifier";
+        nameIdentifierScheme = null;
+        schemeURI = null;
+    };
 
     // getter, setter, adder
     
@@ -38,10 +44,6 @@ public class NameIdentifierField extends AbstractField {
     public URI getSchemeURI() { return this.schemeURI; }
     
     // abstract
-    @Override
-    public String getName() {
-        return("nameIdentifier");
-    }
     
     @Override
     public String validate() {

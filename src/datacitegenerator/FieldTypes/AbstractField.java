@@ -25,10 +25,14 @@ import org.w3c.dom.Element;
  */
 public abstract class AbstractField {
     
-    abstract public String validate();
-    abstract public String getName();
-    
     String value;
+    String name;
+    
+    // Methods
+    
+    public String getName() {
+        return(this.name);
+    }
     
     public String getValue() {
         return this.value;
@@ -38,9 +42,21 @@ public abstract class AbstractField {
         this.value = s;
     };
     
+    public String validate() {
+        String r = "";
+        if (this.getValue() == null) {
+            r = r.concat(this.getName() + ": No value defined.\n");
+        }
+        
+        return r;
+    }
+    
     public Element createXML(Document doc){
         Element field = doc.createElement(this.getName());
-        field.appendChild(doc.createTextNode(this.getValue()));
+        
+        if(this.getValue() != null) {
+            field.appendChild(doc.createTextNode(this.getValue()));
+        }
                 
         return field;
     }

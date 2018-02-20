@@ -11,16 +11,21 @@ package datacitegenerator.FieldTypes;
  */
 public class LanguageField extends AbstractField {
     
-    @Override
-    public String getName() {
-        return("Language");
+    public LanguageField () {
+        this.name="Language";
     }
     
     @Override
     public String validate() {
         String r = "";
-        if (value == null) {
-            r = r.concat(this.getName() + ": No value defined.\n");
+        if (value != null) {        
+            if (!value.matches("")) {
+                r = r.concat(this.getName() 
+                        + " "
+                        + value
+                        + " "
+                        + ": Wrong language type.\n");
+            }
         }
         
         return r;

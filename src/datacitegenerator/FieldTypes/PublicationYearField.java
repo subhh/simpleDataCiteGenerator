@@ -14,9 +14,8 @@ import org.w3c.dom.Element;
  */
 public class PublicationYearField extends AbstractField {
     
-    @Override
-    public String getName() {
-        return("PublicationYear");
+    public PublicationYearField () {
+        name = "PublicationYear";
     }
     
     @Override
@@ -32,13 +31,4 @@ public class PublicationYearField extends AbstractField {
         
         return r;
     }
-    
-    @Override
-    public Element createXML(Document doc){
-        Element field = doc.createElement(this.getName());
-        field.appendChild(doc.createTextNode(this.getValue()));        
-                
-        return field;
-    }
-    
 }

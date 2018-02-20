@@ -32,6 +32,8 @@ public class TitleField extends AbstractField {
     // Constructor
     
     public TitleField () {
+        this.name = "Title";
+        
         titleLang = "de-DE";
         titleType = null;
         
@@ -54,11 +56,6 @@ public class TitleField extends AbstractField {
     public String getTitleLanguage() { return this.titleLang; }
     
     // abstract
-    
-    @Override
-    public String getName() {
-        return("Title");
-    }
     
     @Override
     public String validate() {
