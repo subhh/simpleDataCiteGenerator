@@ -5,17 +5,14 @@
  */
 package datacitegenerator.FieldTypes;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 /**
  *
  * @author jfmaas
  */
-public class PublicationYearField extends AbstractField {
+public class PublicationYearField extends DataciteField {
     
     public PublicationYearField () {
-        name = "PublicationYear";
+        name = "publicationYear";
     }
     
     @Override

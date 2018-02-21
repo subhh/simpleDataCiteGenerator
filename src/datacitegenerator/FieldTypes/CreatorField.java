@@ -15,10 +15,10 @@ import org.w3c.dom.Element;
  *
  * @author jfmaas
  */
-public class CreatorField extends AbstractField {
+public class CreatorField extends DataciteField {
     
     public CreatorField() {  
-        this.name = "Creator";
+        this.name = "creator";
         this.creatorName = null;
         this.givenName = null;
         this.familyName = null;
@@ -37,8 +37,8 @@ public class CreatorField extends AbstractField {
     String nameType = null;
     
     // optional multiple
-    private LinkedList<NameIdentifierField> nameIdentifiers;// 0..N
-    private LinkedList<String> affiliations;// 0..N
+    private final LinkedList<NameIdentifierField> nameIdentifiers;// 0..N
+    private final LinkedList<String> affiliations;// 0..N
 
     // getter, setter, adder
     

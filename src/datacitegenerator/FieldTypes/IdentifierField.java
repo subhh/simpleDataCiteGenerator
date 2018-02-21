@@ -13,12 +13,12 @@ import org.w3c.dom.Element;
  *
  * @author jfmaas
  */
-public class IdentifierField extends AbstractField {
+public class IdentifierField extends DataciteField {
     
     String identifierType;
     
     public IdentifierField () {
-        name = "Identifier";
+        name = "identifier";
         identifierType = null;
     }
     

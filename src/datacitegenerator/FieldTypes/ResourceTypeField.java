@@ -15,15 +15,15 @@ import org.w3c.dom.Element;
  *
  * @author jfmaas
  */
-public class ResourceTypeField extends AbstractField {
+public class ResourceTypeField extends DataciteField {
     
     private String resourceTypeGeneral;
-    private Map<String,String> h_types;
+    private final Map<String,String> h_types;
     
     // Constructor
     
     public ResourceTypeField () {
-        name = "ResourceType";
+        name = "resourceType";
         
         resourceTypeGeneral = null;
 
@@ -69,6 +69,7 @@ public class ResourceTypeField extends AbstractField {
         return r;
     }
     
+    @Override
     public Element createXML(Document doc){
         Element field = doc.createElement(this.getName());
         field.appendChild(doc.createTextNode(this.getValue()));

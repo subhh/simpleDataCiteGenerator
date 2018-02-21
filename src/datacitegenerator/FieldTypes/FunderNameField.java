@@ -9,9 +9,9 @@ package datacitegenerator.FieldTypes;
  *
  * @author jfmaas
  */
-public class PublisherField extends DataciteField {
+public class FunderNameField extends DataciteField {
     
-    public PublisherField () {
-        this.name = "publisher";
+    public FunderNameField() {
+        this.name = "funderName";
     }
 }

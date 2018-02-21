@@ -6,7 +6,6 @@
 package datacitegenerator.FieldTypes;
 
 import java.net.URI;
-import java.util.HashMap;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -15,7 +14,7 @@ import org.w3c.dom.Element;
  *
  * @author jfmaas
  */
-public class SubjectField extends AbstractField {
+public class SubjectField extends DataciteField {
     
     private String subjectLang;
     private String subjectScheme;
@@ -23,7 +22,7 @@ public class SubjectField extends AbstractField {
     private URI subjectURI; 
     
     public SubjectField () {
-            this.name = "Subject";
+            this.name = "subject";
             
             subjectLang = "de-DE";
             subjectScheme = null;

@@ -16,7 +16,7 @@ import org.w3c.dom.Element;
  *
  * @author jfmaas
  */
-public class RelatedIdentifierField extends AbstractField {
+public class RelatedIdentifierField extends DataciteField {
     
     private String relatedIdentifierType;
     private String relationType;

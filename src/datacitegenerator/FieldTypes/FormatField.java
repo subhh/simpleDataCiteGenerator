@@ -9,9 +9,9 @@ package datacitegenerator.FieldTypes;
  *
  * @author jfmaas
  */
-public class FormatField extends AbstractField {
+public class FormatField extends DataciteField {
     
     public FormatField() {
-        this.name = "Format";
+        this.name = "format";
     }
 }

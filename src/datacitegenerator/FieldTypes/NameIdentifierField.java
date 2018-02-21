@@ -6,7 +6,6 @@
 package datacitegenerator.FieldTypes;
 
 import java.net.URI;
-import java.util.LinkedList;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -15,7 +14,7 @@ import org.w3c.dom.Element;
  *
  * @author jfmaas
  */
-public class NameIdentifierField extends AbstractField {
+public class NameIdentifierField extends DataciteField {
     
     // mandatory single
     private String nameIdentifierScheme;
@@ -29,6 +28,7 @@ public class NameIdentifierField extends AbstractField {
     
     public NameIdentifierField() {
         name ="nameIdentifier";
+        
         nameIdentifierScheme = null;
         schemeURI = null;
     };

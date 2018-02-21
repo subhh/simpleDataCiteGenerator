@@ -9,10 +9,10 @@ package datacitegenerator.FieldTypes;
  *
  * @author jfmaas
  */
-public class LanguageField extends AbstractField {
+public class LanguageField extends DataciteField {
     
     public LanguageField () {
-        this.name="Language";
+        this.name="language";
     }
     
     @Override

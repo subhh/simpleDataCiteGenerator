@@ -15,12 +15,12 @@ import org.w3c.dom.Element;
  *
  * @author jfmaas
  */
-public class DateField extends AbstractField {
+public class DateField extends DataciteField {
     
     private String dateType = null;
     private String dateInformation = null;
     
-    private Map<String,String> h_types;
+    private final Map<String,String> h_types;
     
     // mandatory single
     
@@ -34,7 +34,7 @@ public class DateField extends AbstractField {
     
     public DateField () {
         
-        this.name = "Date";
+        this.name = "date";
         
         dateType = null;
         dateInformation = null;

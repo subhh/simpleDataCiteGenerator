@@ -9,9 +9,9 @@ package datacitegenerator.FieldTypes;
  *
  * @author jfmaas
  */
-public class SizeField extends AbstractField {
+public class SizeField extends DataciteField {
     
     public SizeField() {
-        this.name = "Size";
+        this.name = "size";
     }
 }

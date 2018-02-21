@@ -9,9 +9,9 @@ package datacitegenerator.FieldTypes;
  *
  * @author jfmaas
  */
-public class VersionField extends AbstractField {
+public class VersionField extends DataciteField {
     
     public VersionField() {
-        this.name = "Version";
+        this.name = "version";
     }
 }

@@ -5,21 +5,7 @@
  */
 package datacitegenerator;
 
-import datacitegenerator.FieldTypes.AlternateIdentifierField;
-import datacitegenerator.FieldTypes.ContributorField;
-import datacitegenerator.FieldTypes.TitleField;
-import datacitegenerator.FieldTypes.CreatorField;
-import datacitegenerator.FieldTypes.DateField;
-import datacitegenerator.FieldTypes.PublicationYearField;
-import datacitegenerator.FieldTypes.PublisherField;
-import datacitegenerator.FieldTypes.IdentifierField;
-import datacitegenerator.FieldTypes.LanguageField;
-import datacitegenerator.FieldTypes.ResourceTypeField;
-import datacitegenerator.FieldTypes.SubjectField;
-import datacitegenerator.FieldTypes.SizeField;
-import datacitegenerator.FieldTypes.FormatField;
-import datacitegenerator.FieldTypes.RelatedIdentifierField;
-import datacitegenerator.FieldTypes.VersionField;
+import datacitegenerator.FieldTypes.*;
 
 import java.io.File;
 
@@ -56,21 +42,25 @@ public class DataCiteRecord {
     private ResourceTypeField resourceType;
     
     // mandatory multiple
-    private LinkedList<CreatorField> creators;
-    private LinkedList<TitleField> titles;
+    private final LinkedList<CreatorField> creators;
+    private final LinkedList<TitleField> titles;
     
     // optional single
     private LanguageField language;
     private VersionField version;
     
     // optional multiple
-    private LinkedList<SubjectField> subjects;
-    private LinkedList<ContributorField> contributors;
-    private LinkedList<DateField> dates;
-    private LinkedList<RelatedIdentifierField> ris;
-    private LinkedList<AlternateIdentifierField> ais;
-    private LinkedList<SizeField> sizes;
-    private LinkedList<FormatField> formats;
+    private final LinkedList<SubjectField> subjects;
+    private final LinkedList<ContributorField> contributors;
+    private final LinkedList<DateField> dates;
+    private final LinkedList<RelatedIdentifierField> ris;
+    private final LinkedList<AlternateIdentifierField> ais;
+    private final LinkedList<SizeField> sizes;
+    private final LinkedList<FormatField> formats;
+    private final LinkedList<RightsField> rights;
+    private final LinkedList<DescriptionField> descriptions;
+    private final LinkedList<GeoLocationField> geolocations;
+    private final LinkedList<FundingReferenceField> fundings;
     
     //Constructor
     public DataCiteRecord () {
@@ -92,6 +82,10 @@ public class DataCiteRecord {
         sizes = new LinkedList<>();
         formats = new LinkedList<>();
         version = null;
+        rights = new LinkedList<>();
+        descriptions = new LinkedList<>();
+        geolocations = new LinkedList<>();
+        fundings = new LinkedList<>();
     }
        
     // getter, setter, adder
@@ -156,127 +150,86 @@ public class DataCiteRecord {
     public void setVersion(VersionField s){ this.version = s; }
     public VersionField getVersion() { return this.version; }
     
+    // ID 16
+    public void addRights(RightsField s){ this.rights.add(s); }
+    public LinkedList<RightsField> getRights() { return this.rights; }
+    
+    // ID 17
+    public void addDescription(DescriptionField s){ this.descriptions.add(s); }
+    public LinkedList<DescriptionField> getDescriptions() { return this.descriptions; }
+    
+    // ID 18
+    public void addGeolocation(GeoLocationField s){ this.geolocations.add(s); }
+    public LinkedList<GeoLocationField> getGeolocations() { return this.geolocations; }
+    
     public String validate() {
+        
         String r = "";
-        Iterator i = null;
         
         // Identifier
-        if (id != null) {
-            r = r.concat(id.validate());
-        } else {
-            r = r.concat("No identifier is set!\n");
-        }
-        
+        if (id == null) { r = r.concat("No identifier specified!\n");} 
+        else { r = r.concat(id.validate());}
+
         // creator
-        if (creators.size() < 1) {
-            r = r.concat("No creator specified!\n");
-        } else {
-            i = this.creators.iterator();
-            while(i.hasNext()) {
-                CreatorField f = (CreatorField) i.next();
-                r = r.concat(f.validate());
-            }
-        }
-        
+        if (creators.size() < 1) { r = r.concat("No creator specified!\n"); } 
+        r = r.concat(DataciteToolkit.validateList(creators));
+
         // title
-        if (titles.size() < 1) {
-            r = r.concat("No title specified!\n");
-        } else {
-            i = this.titles.iterator();
-            while(i.hasNext()) {
-                TitleField f = (TitleField) i.next();
-                r = r.concat(f.validate());
-            }
-        }
-        
+        if (titles.size() < 1) { r = r.concat("No title specified!\n"); }
+        r = r.concat(DataciteToolkit.validateList(titles));
+
         // publisher
-        if (publisher != null) {
-            r = r.concat(publisher.validate());
-        } else {
-            r = r.concat("No publisher is set!\n");
-        }
-        
+        if (publisher == null) { r = r.concat("No publisher specified!\n"); }
+        else { r = r.concat(publisher.validate());}
+
         // publication year
-        if (py != null) {
-            r = r.concat(py.validate());
-        } else {
-            r = r.concat("No publication year is set!\n");
-        }
-        
+        if (py == null) { r = r.concat("No publication year specified!\n"); } 
+        else { r = r.concat(py.validate());}
+
         // subjects
-        if (subjects.size() > 0) {
-            i = this.titles.iterator();
-            while(i.hasNext()) {
-                SubjectField f = (SubjectField) i.next();
-                r = r.concat(f.validate());
-            }
-        }
-        
+        r = r.concat(DataciteToolkit.validateList(subjects));
+
         // contributors
-        if (contributors.size() > 0) {
-            i = this.titles.iterator();
-            while(i.hasNext()) {
-                ContributorField f = (ContributorField) i.next();
-                r = r.concat(f.validate());
-            }
-        }
-        
+        r = r.concat(DataciteToolkit.validateList(contributors));
+
         // dates
-        if (dates.size() > 0) {
-            i = this.dates.iterator();
-            while(i.hasNext()) {
-                DateField f = (DateField) i.next();
-                r = r.concat(f.validate());
-            }
-        }
-        
+        r = r.concat(DataciteToolkit.validateList(dates));
+
         // language
-        if (language != null) {
-            r = r.concat(language.validate());
-        }
-        
+        if (language != null) { r = r.concat(language.validate()); }
+
         // resourcetype
-        if (resourceType == null) {
-            r = r.concat("resourceType not specified!\n");
-        } else {
-            r = r.concat(resourceType.validate());
-        }
-        
+        if (resourceType == null) { r = r.concat("No resourceType specified!\n"); }
+        else {r = r.concat(resourceType.validate());}
+
         // alternateIdentifier
-        if (ais.size() > 0) {
-            i = ais.iterator();
-            while(i.hasNext()) {
-                AlternateIdentifierField f = (AlternateIdentifierField) i.next();
-                r = r.concat(f.validate());
-            }
-        }
-        
+        r = r.concat(DataciteToolkit.validateList(ais));
+
         // relatedIdentifier
-        if (ris.size() > 0) {
-            i = ris.iterator();
-            while(i.hasNext()) {
-                RelatedIdentifierField f = (RelatedIdentifierField) i.next();
-                r = r.concat(f.validate());
-            }
-        }
-        
+        r = r.concat(DataciteToolkit.validateList(ris));
+
         // size
-        if (sizes.size() > 0) {
-            i = sizes.iterator();
-            while(i.hasNext()) {
-                SizeField f = (SizeField) i.next();
-                r = r.concat(f.validate());
-            }
-        }
+        r = r.concat(DataciteToolkit.validateList(sizes));
+        
+        // format
+        r = r.concat(DataciteToolkit.validateList(formats));
+        
         // version
-        if (this.version != null) {
-            r = r.concat(this.version.validate());
-        }
+        if (this.version != null) { r = r.concat(this.version.validate()); }
+        
+        // rights
+        r = r.concat(DataciteToolkit.validateList(rights));
+        
+        // descriptions
+        r = r.concat(DataciteToolkit.validateList(descriptions));
+        
+        // geolocations
+        r = r.concat(DataciteToolkit.validateList(geolocations));
         
         return r;
     }
     
-    public void createXML(){
+    public void createXML(File xmlfile){
         
         try {
             
@@ -289,109 +242,90 @@ public class DataCiteRecord {
             Document doc = docBuilder.newDocument();
             
             Element rootElement = doc.createElement("resource");
-            Attr attr = doc.createAttribute("xsi:schemaLocation");
-            attr.setValue("http://datacite.org/schema/kernel-4 http://schema.datacite.org/meta/kernel-4.1/metadata.xsd");
-            rootElement.setAttributeNode(attr);
+            rootElement.setAttributeNS(
+                    "http://www.w3org.2001/XMLSchema-instance",
+                    "xsi:schema-location",
+                    "http://datacite.org/schema/kernel-4 http://schema.datacite.org/meta/kernel-4.1/metadata.xsd"
             
-            // add Identifier
-            if (id != null) {
-                rootElement.appendChild(id.createXML(doc));
-            }   
+            );
+            //Attr attr = doc.createAttribute("xsi:schemaLocation");
+            //attr.setValue("http://datacite.org/schema/kernel-4 http://schema.datacite.org/meta/kernel-4.1/metadata.xsd");
+            //rootElement.setAttributeNode(attr);
             
-            // add Creators
-            i = this.creators.iterator();
-            while(i.hasNext()) {
-                CreatorField f = (CreatorField) i.next();
-                rootElement.appendChild(f.createXML(doc));
-            }
+            // add Fields
             
-            // add titles
-            i = this.titles.iterator();
-            while(i.hasNext()) {
-                TitleField f = (TitleField) i.next();
-                rootElement.appendChild(f.createXML(doc));
-            }
+            // Identifier
+            if (id != null) { rootElement.appendChild(id.createXML(doc)); }   
+            
+            // Creators
+            rootElement = DataciteToolkit.createXMLFromList(rootElement, doc, this.creators);
+            
+            // titles
+            rootElement = DataciteToolkit.createXMLFromList(rootElement, doc, this.titles);
 
-            // add publisher
-            if (id != null) {
-                rootElement.appendChild(publisher.createXML(doc));
-            }  
+            // publisher
+            if (publisher != null) { rootElement.appendChild(publisher.createXML(doc)); }  
 
-            // add publication year
-            if (id != null) {
-                rootElement.appendChild(py.createXML(doc));
-            }      
+            // publication year
+            if (py != null) { rootElement.appendChild(py.createXML(doc)); }      
             
-            // add subjects
-            i = this.subjects.iterator();
-            while(i.hasNext()) {
-                SubjectField f = (SubjectField) i.next();
-                rootElement.appendChild(f.createXML(doc));
-            }
+            // subjects
+            rootElement = DataciteToolkit.createXMLFromList(rootElement, doc, this.subjects);
+
+            // contributors
+            rootElement = DataciteToolkit.createXMLFromList(rootElement, doc, this.contributors);
             
-            // add contributors
-            i = this.contributors.iterator();
-            while(i.hasNext()) {
-                ContributorField f = (ContributorField) i.next();
-                rootElement.appendChild(f.createXML(doc));
-            }
-            
-            // add dates
-            i = this.dates.iterator();
-            while(i.hasNext()) {
-                DateField f = (DateField) i.next();
-                rootElement.appendChild(f.createXML(doc));
-            }
+            // dates
+            rootElement = DataciteToolkit.createXMLFromList(rootElement, doc, this.dates);
             
             // language
-            if (language != null) {
-                rootElement.appendChild(language.createXML(doc));
-            }
+            if (language != null) { rootElement.appendChild(language.createXML(doc)); }
             
             // resourceType
-            if (resourceType != null){
-                rootElement.appendChild(resourceType.createXML(doc));
-            }
+            if (resourceType != null){ rootElement.appendChild(resourceType.createXML(doc)); }
             
-            // add alternateIdentifiers
-            i = this.ais.iterator();
-            while(i.hasNext()) {
-                AlternateIdentifierField f = (AlternateIdentifierField) i.next();
-                rootElement.appendChild(f.createXML(doc));
-            }
+            // alternateIdentifiers
+            rootElement = DataciteToolkit.createXMLFromList(rootElement, doc, this.ais);
             
-            // add relatedIdentifiers
-            i = this.ris.iterator();
-            while(i.hasNext()) {
-                RelatedIdentifierField f = (RelatedIdentifierField) i.next();
-                rootElement.appendChild(f.createXML(doc));
-            }
+            // relatedIdentifiers
+            rootElement = DataciteToolkit.createXMLFromList(rootElement, doc, this.ris);
             
-            // add size
-            i = this.sizes.iterator();
-            while(i.hasNext()) {
-                SizeField f = (SizeField) i.next();
-                rootElement.appendChild(f.createXML(doc));
-            }
+            // size
+            rootElement = DataciteToolkit.createXMLFromList(rootElement, doc, this.sizes);
             
-            // add format
-            i = this.formats.iterator();
-            while(i.hasNext()) {
-                FormatField f = (FormatField) i.next();
-                rootElement.appendChild(f.createXML(doc));
-            }
+            // format
+            rootElement = DataciteToolkit.createXMLFromList(rootElement, doc, this.formats);
+
+            // version
+            if (version != null) { rootElement.appendChild(version.createXML(doc)); }   
             
-            // add version
-            if (version != null) {
-                rootElement.appendChild(version.createXML(doc));
-            }   
+            // rights
+            rootElement = DataciteToolkit.createXMLFromList(rootElement, doc, this.rights);
+            
+            // description
+            rootElement = DataciteToolkit.createXMLFromList(rootElement, doc, this.descriptions);
+
+            // geolocations
+            rootElement = DataciteToolkit.createXMLFromList(rootElement, doc, this.geolocations);
             
             // End
             doc.appendChild(rootElement);
+            
+            // write the content into xml file
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(doc);
+            StreamResult result = new StreamResult(xmlfile);
+
+            // Output to console for testing
+            // StreamResult result = new StreamResult(System.out);
+
+            transformer.transform(source, result);
         
-        } catch (ParserConfigurationException | TransformerException pce) {
-            pce.printStackTrace();
-	}
+	  } catch (ParserConfigurationException | TransformerException pce) {
+		pce.printStackTrace();
+	  }
         
     }
+   
 }

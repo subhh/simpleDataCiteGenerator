@@ -13,10 +13,10 @@ import org.w3c.dom.Element;
  *
  * @author jfmaas
  */
-public class AlternateIdentifierField extends AbstractField {
+public class AlternateIdentifierField extends DataciteField {
     
     public AlternateIdentifierField () {
-        this.name = "AlternateIdentifier";
+        this.name = "alternateIdentifier";
     }
     private String alternateIdentifierType = null;
     

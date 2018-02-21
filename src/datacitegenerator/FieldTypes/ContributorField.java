@@ -17,7 +17,7 @@ import org.w3c.dom.Element;
  *
  * @author jfmaas
  */
-public class ContributorField extends AbstractField{
+public class ContributorField extends DataciteField{
    
     Map<String,String> h_types;
     
@@ -32,12 +32,12 @@ public class ContributorField extends AbstractField{
     String givenName;
     
     // optional multiple
-    private LinkedList<NameIdentifierField> nameIdentifiers;// 0..N
-    private LinkedList<String> affiliations;// 0..N
+    private final LinkedList<NameIdentifierField> nameIdentifiers;// 0..N
+    private final LinkedList<String> affiliations;// 0..N
     
     public ContributorField() {
         
-        this.name = "Creator";
+        this.name = "contributor";
         
         this.contributorType = null;
         this.contributorName = null;

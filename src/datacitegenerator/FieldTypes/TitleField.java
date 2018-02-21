@@ -6,7 +6,6 @@
 package datacitegenerator.FieldTypes;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -16,23 +15,17 @@ import org.w3c.dom.Element;
  *
  * @author jfmaas
  */
-public class TitleField extends AbstractField {
-    
-    // mandatory single
-    
-    // mandatory multiple
-    
+public class TitleField extends DataciteField {
+   
     // optional single
     private String titleLang;
     private String titleType;
-    private Map<String,String> h_types;
-    
-    // optional multiple
+    private final Map<String,String> h_types;
     
     // Constructor
     
     public TitleField () {
-        this.name = "Title";
+        this.name = "title";
         
         titleLang = "de-DE";
         titleType = null;
@@ -64,8 +57,11 @@ public class TitleField extends AbstractField {
             r = r.concat(this.getName() + ": No value defined.\n");
         }
         
-        if ((this.titleType != null) && (h_types.get(this.titleType) != null)) {
-            r = r.concat(this.getName() + ": Wrong/missing title type.\n");
+        if ((this.titleType != null) && (h_types.get(this.titleType) == null)) {
+            r = r.concat(this.getName() 
+                    + " "
+                    + this.getTitleType()
+                    + ": Wrong title type.\n");
         }
         
         return r;
