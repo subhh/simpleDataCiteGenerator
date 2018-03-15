@@ -3,3 +3,4 @@
 *.class
 nbproject/
 /build/
+/data/output.xml
