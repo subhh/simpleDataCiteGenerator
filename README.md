@@ -1,8 +1,8 @@
 # simpleDataCiteGenerator
 A simple and very straightforward tool to create DataCite metadata format files.
 
-status: alpha version
-Supported version of DataCite Metadata format: 4.1
+* status: alpha version
+* Supported version of DataCite Metadata format: 4.1
 
 ## Description
 
