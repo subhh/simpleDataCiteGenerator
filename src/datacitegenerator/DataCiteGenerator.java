@@ -40,6 +40,10 @@ public class DataCiteGenerator {
         tf2.setTitleType("Other");
         rc.addTitle(tf2);
         
+        TitleField tf3 = new TitleField();
+        tf3.setValue("beluga- Der Wal und ich");
+        rc.addTitle(tf3);
+        
         PublisherField pf = new PublisherField();
         pf.setValue("Noname Books");
         rc.setPublisher(pf);
@@ -55,7 +59,7 @@ public class DataCiteGenerator {
 
         // Output
         System.out.println(rc.validate());
-        rc.createXML(new File("/home/jfmaas/out.xml"));
+        rc.createXML(new File("c:/local/out.xml"));
         
     }
     
