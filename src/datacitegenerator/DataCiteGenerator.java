@@ -8,6 +8,7 @@ package datacitegenerator;
 import datacitegenerator.FieldTypes.*;
 
 import java.io.File;
+import org.apache.commons.cli.*;
 
 /**
  *
@@ -19,7 +20,44 @@ public class DataCiteGenerator {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        
+        Options options = new Options();
+
+        Option input = new Option("i", "input", true, "input file path");
+        input.setRequired(true);
+        options.addOption(input);
+
+        Option output = new Option("o", "output", true, "output file");
+        output.setRequired(true);
+        options.addOption(output);
+
+        Option parseropt = new Option("p", "parser", true, "parser to use. Option(s): HosAggregator");
+        output.setRequired(true);
+        options.addOption(parseropt);
+        
+        CommandLineParser parser = new DefaultParser();
+        HelpFormatter formatter = new HelpFormatter();
+        CommandLine cmd;
+
+        try {
+            cmd = parser.parse(options, args);
+        } catch (ParseException e) {
+            System.out.println(e.getMessage());
+            formatter.printHelp("utility-name", options);
+
+            System.exit(1);
+            return;
+        }
+
+        String inputFilePath = cmd.getOptionValue("input");
+        String outputFilePath = cmd.getOptionValue("output");
+        String parserName = cmd.getOptionValue("parser");
+
+        System.out.println(inputFilePath);
+        System.out.println(outputFilePath);
+        System.out.println(parserName);
+        
+        /*
         
         DataCiteRecord rc = new DataCiteRecord();
 
@@ -61,6 +99,7 @@ public class DataCiteGenerator {
         System.out.println(rc.validate());
         rc.createXML(new File("c:/local/out.xml"));
         
+        */
     }
     
 }
