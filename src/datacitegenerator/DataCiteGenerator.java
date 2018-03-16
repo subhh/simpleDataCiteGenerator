@@ -6,6 +6,8 @@
 package datacitegenerator;
 
 import datacitegenerator.FieldTypes.*;
+import datacitegenerator.parser.DataCiteGeneratorParser;
+import datacitegenerator.parser.HosAggregatorParser;
 
 import java.io.File;
 import org.apache.commons.cli.*;
@@ -32,7 +34,7 @@ public class DataCiteGenerator {
         options.addOption(output);
 
         Option parseropt = new Option("p", "parser", true, "parser to use. Option(s): HosAggregator");
-        output.setRequired(true);
+        parseropt.setRequired(true);
         options.addOption(parseropt);
         
         CommandLineParser parser = new DefaultParser();
@@ -56,6 +58,26 @@ public class DataCiteGenerator {
         System.out.println(inputFilePath);
         System.out.println(outputFilePath);
         System.out.println(parserName);
+        
+        DataCiteGeneratorParser p = null;
+        
+        switch (parserName) {
+            case "HosAggregator":
+                p = new HosAggregatorParser();
+                break;
+            
+            default: 
+                System.out.println("Unknown parser name. Exiting.");
+                System.exit(0);
+                break;
+        }
+        
+        p.setInputfile(inputFilePath);
+        p.setOutputfile(outputFilePath);
+        
+        p.parse();
+        
+        System.out.println(p.validate());
         
         /*
         

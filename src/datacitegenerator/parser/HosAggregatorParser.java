@@ -9,7 +9,19 @@ package datacitegenerator.parser;
  *
  * @author jfmaas
  */
-public class HosAggregatorParser {
+public class HosAggregatorParser extends DataCiteGeneratorParser {
+    
+    @Override
+    public void parse() {
+        
+    }
+    
+    @Override
+    public String validate() {
+        String result = "";
+        
+        return result;
+    }
     
 }
 
