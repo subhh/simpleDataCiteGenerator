@@ -54,10 +54,7 @@ public class DataCiteGenerator {
         String inputFilePath = cmd.getOptionValue("input");
         String outputFilePath = cmd.getOptionValue("output");
         String parserName = cmd.getOptionValue("parser");
-
-        System.out.println(inputFilePath);
-        System.out.println(outputFilePath);
-        System.out.println(parserName);
+;
         
         DataCiteGeneratorParser p = null;
         
