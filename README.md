@@ -14,6 +14,8 @@ Verification of most DataCite constraints are supported; however, the tool suppo
 
 ## Usage
 The tool is configured by command line arguments
+```
 java DataCiteGenerator -i <inputfile> -o <outputfile> -p <parser name>
+```
   
 Currently, only "HosAggregator" is a valid option for the parser name. Feel free to create your own parsers.
