@@ -6,6 +6,8 @@
 package datacitegenerator.parser;
 
 import datacitegenerator.DataCiteRecord;
+import datacitegenerator.FieldTypes.CreatorField;
+import datacitegenerator.FieldTypes.IdentifierField;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Iterator;
@@ -45,7 +47,7 @@ public class HosAggregatorParser extends DataCiteGeneratorParser {
         try {
             XMLInputFactory factory = XMLInputFactory.newInstance();
             XMLEventReader eventReader =
-            factory.createXMLEventReader(new FileReader(inputfile));
+                factory.createXMLEventReader(new FileReader(inputfile));
 
             while(eventReader.hasNext()) {
                 XMLEvent event = eventReader.nextEvent();
@@ -56,8 +58,13 @@ public class HosAggregatorParser extends DataCiteGeneratorParser {
                     StartElement startElement = event.asStartElement();
                     String qName = startElement.getName().getLocalPart();
                     
-                    // doc beginning? create new record
-                    if(qName.equalsIgnoreCase("doc")) { record = new DataCiteRecord();}
+                    // doc beginning? finish old record, create new record
+                    if(qName.equalsIgnoreCase("doc")) { 
+                        if (record != null) {
+                            myRecords.add(record);
+                        }
+                        record = new DataCiteRecord();
+                    }
                     
                     if (qName.equalsIgnoreCase("field")) { 
                         Iterator<Attribute> attributes = startElement.getAttributes();
@@ -79,9 +86,29 @@ public class HosAggregatorParser extends DataCiteGeneratorParser {
                         
                         // store identifier directly
                         if (context.equalsIgnoreCase("identifier")) {
-                            
+                            IdentifierField id = new IdentifierField();
+                            id.setValue(content);
+                            record.setIdentifier(id);
                         }
                         
+                        // store identifierField. Asume identifier field.
+                        if (context.equalsIgnoreCase("identifierfield")) {
+                            IdentifierField id = record.getIdentifier();
+                            if (id == null) {
+                                throw new HosSolrParseException("identifierField found but no identifier specified.");
+                            }
+                            id.setIdentifierType(content);
+                            record.setIdentifier(id);
+                        }
+                        
+                        // store creatorName
+                        if (context.equalsIgnoreCase("creatorname")) {
+                            CreatorField creator = new CreatorField();
+                            creator.setCreatorName(content);
+                            record.addCreator(creator);
+                        }
+                        
+                        // store
                     }
                     
                     
@@ -91,7 +118,7 @@ public class HosAggregatorParser extends DataCiteGeneratorParser {
                 case XMLStreamConstants.END_ELEMENT:
                     EndElement endElement = event.asEndElement();
                     
-                    // Doc ending? store record
+                    // Doc ending? store final record
                     if(endElement.getName().getLocalPart().equalsIgnoreCase("doc")) {
                         myRecords.add(record);
                     }
