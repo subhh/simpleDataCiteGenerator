@@ -7,11 +7,18 @@ package datacitegenerator.parser;
 
 import datacitegenerator.DataCiteRecord;
 import datacitegenerator.FieldTypes.CreatorField;
+import datacitegenerator.FieldTypes.DateField;
 import datacitegenerator.FieldTypes.IdentifierField;
+import datacitegenerator.FieldTypes.PublicationYearField;
+import datacitegenerator.FieldTypes.PublisherField;
+import datacitegenerator.FieldTypes.TitleField;
+import datacitegenerator.FieldTypes.SubjectField;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.net.URI;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -108,10 +115,69 @@ public class HosAggregatorParser extends DataCiteGeneratorParser {
                             record.addCreator(creator);
                         }
                         
-                        // store
+                        // store title(s)
+                        if (context.equalsIgnoreCase("title")) {
+                            TitleField t = new TitleField();
+                            t.setValue(content);
+                            record.addTitle(t);
+                        }
+                        
+                        // store title language
+                        if (context.equalsIgnoreCase("titlelang")) {
+                            try {
+                                TitleField t = record.getTitles().getLast();
+                                t.setTitleLanguage(content);
+                            } catch (NoSuchElementException e) {
+                                    throw new HosSolrParseException("Title lang was set but no title was define! ");
+                            }
+                        }
+                        
+                        // store publisher
+                        if (context.equalsIgnoreCase("publisher")) {
+                            PublisherField p = new PublisherField();
+                            p.setValue(content);
+                            record.setPublisher(p);
+                        }
+
+                        // store publication year
+                        if (context.equalsIgnoreCase("publicationyear")) {
+                            PublicationYearField p = new PublicationYearField();
+                            p.setValue(content);
+                            record.setPublicationYear(p);
+                        }
+                        
+                        // do nothing with university
+                        if (context.equalsIgnoreCase("university")) {};
+                        
+                        // do nothing with institute
+                        if (context.equalsIgnoreCase("institut")) {};
+                        if (context.equalsIgnoreCase("institute")) {};
+                        
+                        // store subjects
+                        if (context.equalsIgnoreCase("subject")) {
+                            SubjectField s = new SubjectField();
+                            s.setValue(content);
+                            record.addSubjectField(s);
+                        }                
+                        
+                        if (context.equalsIgnoreCase("subjectddc")) {
+                            SubjectField s = new SubjectField();
+                            s.setValue(content);
+                            s.setSubjectScheme("DDC");
+                            try {
+                                s.setSchemeURI(new URI("https://www.oclc.org/en/dewey.html"));
+                            } catch (Exception e) {};
+                            record.addSubjectField(s);
+                        }                
+                        
+                        // store dates
+                        if (context.equalsIgnoreCase("date")) {
+                            DateField d = new DateField();
+                            d.setValue(content);
+                            record.addDateField(d);
+                        }   
+                        
                     }
-                    
-                    
 
                 break;
 
@@ -135,6 +201,11 @@ public class HosAggregatorParser extends DataCiteGeneratorParser {
     @Override
     public String validate() {
         String result = "";
+        
+        for (DataCiteRecord dc : myRecords) {
+            result = result.concat(dc.validate());
+            result = result.concat("\n\n");
+        }
         
         return result;
     }    
