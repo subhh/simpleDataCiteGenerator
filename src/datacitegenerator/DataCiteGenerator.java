@@ -74,7 +74,12 @@ public class DataCiteGenerator {
         
         p.parse();
         
+        // Validate
         System.out.println(p.validate());
+        
+        // Write
+        //TODO
+        // Aufrufen der einzelnen createXMLFunktionen mit dem File
         
         /*
         
