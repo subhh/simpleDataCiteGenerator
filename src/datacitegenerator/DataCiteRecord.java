@@ -229,7 +229,7 @@ public class DataCiteRecord {
         return r;
     }
     
-    public void createXML(File xmlfile){
+    public void writeXML(File xmlfile){
         
         try {
             

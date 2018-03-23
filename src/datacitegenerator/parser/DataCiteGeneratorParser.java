@@ -5,7 +5,9 @@
  */
 package datacitegenerator.parser;
 
+import datacitegenerator.DataCiteRecord;
 import java.io.File;
+import java.util.List;
 
 /**
  *
@@ -32,6 +34,8 @@ public abstract class DataCiteGeneratorParser {
     }
     
     public abstract void parse();
+    
+    public abstract List<DataCiteRecord> getRecords();
     
     public abstract String validate();
 }

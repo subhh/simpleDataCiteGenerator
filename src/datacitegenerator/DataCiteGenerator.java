@@ -10,6 +10,7 @@ import datacitegenerator.parser.DataCiteGeneratorParser;
 import datacitegenerator.parser.HosAggregatorParser;
 
 import java.io.File;
+import java.util.List;
 import org.apache.commons.cli.*;
 
 /**
@@ -29,7 +30,7 @@ public class DataCiteGenerator {
         input.setRequired(true);
         options.addOption(input);
 
-        Option output = new Option("o", "output", true, "output file");
+        Option output = new Option("o", "output", true, "output file path and prefix");
         output.setRequired(true);
         options.addOption(output);
 
@@ -77,9 +78,22 @@ public class DataCiteGenerator {
         // Validate
         System.out.println(p.validate());
         
-        // Write
-        //TODO
-        // Aufrufen der einzelnen createXMLFunktionen mit dem File
+        List<DataCiteRecord> records = p.getRecords();
+                
+        // Write Records based on file prefix
+        int count = records.size();
+        String digits = Integer.toString(count);
+        digits = "%0" + Integer.toString(digits.length()) + "d";
+        int i = 0;
+        for (DataCiteRecord record : records) {
+            i++;
+            
+            String filename = outputFilePath + String.format(digits,i) + ".xml";
+            record.writeXML(new File(filename));
+            //int yourInteger = 30;
+            //String formattedNumber = String.format("%03d", yourInteger);
+        }
+
         
         /*
         

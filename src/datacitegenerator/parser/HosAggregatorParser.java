@@ -18,6 +18,7 @@ import java.io.FileReader;
 import java.net.URI;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import javax.xml.stream.XMLEventReader;
@@ -189,15 +190,15 @@ public class HosAggregatorParser extends DataCiteGeneratorParser {
                         myRecords.add(record);
                     }
                 break;
-            } 
-         }
-      } catch (FileNotFoundException e) {
-         e.printStackTrace();
-      } catch (XMLStreamException e) {
-         e.printStackTrace();
-      }
-   }
+                } 
+            }
+        } catch (FileNotFoundException e) { e.printStackTrace();} 
+          catch (XMLStreamException e) { e.printStackTrace();}
+    }
 
+    @Override
+    public List<DataCiteRecord> getRecords() { return myRecords;  }
+        
     @Override
     public String validate() {
         String result = "";
