@@ -17,9 +17,16 @@ Verification of most DataCite constraints are supported; however, the tool suppo
 The tool is configured by command line arguments. For a quick start, you can use the automatically generated build in /dist/
 
 ```
-java -jar dist/simpleDataCiteGenerator -i <inputfile> -o <outputfile> -p <parser name>
+java -jar dist/simpleDataCiteGenerator -i <inputfile> -o <outputfilePrefix> -p <parser name>
 ```
   
 Don't forget to add the additional library/libraries in dist/lib/* to your classpath.
 
+Since the DataCite Format only allows for one record per file, Outputfiles are stored in bulk with numbered names, e.g. dataCiteRecord0019.xml
+
 Currently, only "HosAggregator" is a valid option for the parser name. Feel free to create your own parsers.
+
+## Upcomming features
+* Finishing the HOSAggregatorParser
+* JSON export
+* MySQL support
