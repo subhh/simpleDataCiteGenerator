@@ -92,6 +92,9 @@ public class DataCiteGenerator {
             record.writeXML(new File(filename));
             //int yourInteger = 30;
             //String formattedNumber = String.format("%03d", yourInteger);
+            
+            // end after 10 records for testing purposes
+            if (i > 9) { break; }
         }
 
         

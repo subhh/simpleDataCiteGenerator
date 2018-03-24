@@ -6,11 +6,14 @@
 package datacitegenerator.parser;
 
 import datacitegenerator.DataCiteRecord;
+import datacitegenerator.FieldTypes.AlternateIdentifierField;
 import datacitegenerator.FieldTypes.CreatorField;
 import datacitegenerator.FieldTypes.DateField;
 import datacitegenerator.FieldTypes.IdentifierField;
+import datacitegenerator.FieldTypes.LanguageField;
 import datacitegenerator.FieldTypes.PublicationYearField;
 import datacitegenerator.FieldTypes.PublisherField;
+import datacitegenerator.FieldTypes.RelatedIdentifierField;
 import datacitegenerator.FieldTypes.TitleField;
 import datacitegenerator.FieldTypes.SubjectField;
 import java.io.FileNotFoundException;
@@ -88,15 +91,19 @@ public class HosAggregatorParser extends DataCiteGeneratorParser {
                     
                     if(in_context) { 
                         in_context = false;
+                        boolean wasProcessed = false;
                         
                         // do nothing with collections
-                        if (context.equalsIgnoreCase("collection")) {};
+                        if (context.equalsIgnoreCase("collection")) {
+                            wasProcessed = true;
+                        };
                         
                         // store identifier directly
                         if (context.equalsIgnoreCase("identifier")) {
                             IdentifierField id = new IdentifierField();
                             id.setValue(content);
                             record.setIdentifier(id);
+                            wasProcessed = true;
                         }
                         
                         // store identifierField. Asume identifier field.
@@ -107,6 +114,7 @@ public class HosAggregatorParser extends DataCiteGeneratorParser {
                             }
                             id.setIdentifierType(content);
                             record.setIdentifier(id);
+                            wasProcessed = true;
                         }
                         
                         // store creatorName
@@ -114,6 +122,7 @@ public class HosAggregatorParser extends DataCiteGeneratorParser {
                             CreatorField creator = new CreatorField();
                             creator.setCreatorName(content);
                             record.addCreator(creator);
+                            wasProcessed = true;
                         }
                         
                         // store title(s)
@@ -121,6 +130,7 @@ public class HosAggregatorParser extends DataCiteGeneratorParser {
                             TitleField t = new TitleField();
                             t.setValue(content);
                             record.addTitle(t);
+                            wasProcessed = true;
                         }
                         
                         // store title language
@@ -129,8 +139,9 @@ public class HosAggregatorParser extends DataCiteGeneratorParser {
                                 TitleField t = record.getTitles().getLast();
                                 t.setTitleLanguage(content);
                             } catch (NoSuchElementException e) {
-                                    throw new HosSolrParseException("Title lang was set but no title was define! ");
+                                    throw new HosSolrParseException("Title lang was set but no title was defined before! ");
                             }
+                            wasProcessed = true;
                         }
                         
                         // store publisher
@@ -138,6 +149,7 @@ public class HosAggregatorParser extends DataCiteGeneratorParser {
                             PublisherField p = new PublisherField();
                             p.setValue(content);
                             record.setPublisher(p);
+                            wasProcessed = true;
                         }
 
                         // store publication year
@@ -145,20 +157,28 @@ public class HosAggregatorParser extends DataCiteGeneratorParser {
                             PublicationYearField p = new PublicationYearField();
                             p.setValue(content);
                             record.setPublicationYear(p);
+                            wasProcessed = true;
                         }
                         
                         // do nothing with university
-                        if (context.equalsIgnoreCase("university")) {};
+                        if (context.equalsIgnoreCase("university")) {
+                            wasProcessed = true;
+                        };
                         
                         // do nothing with institute
-                        if (context.equalsIgnoreCase("institut")) {};
-                        if (context.equalsIgnoreCase("institute")) {};
+                        if (context.equalsIgnoreCase("institut")) {
+                            wasProcessed = true;
+                        };
+                        if (context.equalsIgnoreCase("institute")) {
+                            wasProcessed = true;
+                        };
                         
                         // store subjects
                         if (context.equalsIgnoreCase("subject")) {
                             SubjectField s = new SubjectField();
                             s.setValue(content);
                             record.addSubjectField(s);
+                            wasProcessed = true;
                         }                
                         
                         if (context.equalsIgnoreCase("subjectddc")) {
@@ -169,6 +189,7 @@ public class HosAggregatorParser extends DataCiteGeneratorParser {
                                 s.setSchemeURI(new URI("https://www.oclc.org/en/dewey.html"));
                             } catch (Exception e) {};
                             record.addSubjectField(s);
+                            wasProcessed = true;
                         }                
                         
                         // store dates
@@ -176,8 +197,97 @@ public class HosAggregatorParser extends DataCiteGeneratorParser {
                             DateField d = new DateField();
                             d.setValue(content);
                             record.addDateField(d);
+                            wasProcessed = true;
                         }   
                         
+                        // store dateType. assume former date field
+                        if (context.equalsIgnoreCase("datetype")) {
+                            try {
+                                DateField d = record.getDates().getLast();
+                                d.setDateType(content);
+                            } catch (NoSuchElementException e) {
+                                    throw new HosSolrParseException("dateType was set but no date was defined before! ");
+                            }
+                            wasProcessed = true;
+                        }
+
+                        // store dateInformation. assume former date field
+                        if (context.equalsIgnoreCase("dateinformation")) {
+                            try {
+                                DateField d = record.getDates().getLast();
+                                d.setDateInformation(content);
+                            } catch (NoSuchElementException e) {
+                                    throw new HosSolrParseException("dateInfomration was set but no date was defined before! ");
+                            }
+                            wasProcessed = true;
+                        }
+                        
+                        // store language
+                        if (context.equalsIgnoreCase("language")) {
+                            LanguageField l = new LanguageField();
+                            l.setValue(content);
+                            record.setLanguage(l);
+                            wasProcessed = true;
+                        }
+                        
+                        // store alternateIdentifier
+                        if (context.equalsIgnoreCase("alternateidentifier")) {
+                            AlternateIdentifierField d = new AlternateIdentifierField();
+                            d.setValue(content);
+                            record.addAlternateIdentifier(d);
+                            wasProcessed = true;
+                        }   
+                        
+                        // store AlternateIdentifierType. assume former AlternateIdentifier field
+                        if (context.equalsIgnoreCase("AlternateIdentifierfield")) {
+                            try {
+                                AlternateIdentifierField d = record.getAlternateIdentifiers().getLast();
+                                d.setAlternateIdentifierType(content);
+                            } catch (NoSuchElementException e) {
+                                    throw new HosSolrParseException("AlternateIdentifierType was set but no alternateIdentifier was defined before! ");
+                            }
+                            wasProcessed = true;
+                        }
+                        
+                        // store relatedIdentifier
+                        if (context.equalsIgnoreCase("relatedidentifier")) {
+                            RelatedIdentifierField d = new RelatedIdentifierField();
+                            d.setValue(content);
+                            record.addRelatedIdentifier(d);
+                            wasProcessed = true;
+                        }   
+                        
+                        // store RelatedIdentifierType. assume former RelatedIdentifier field
+                        if (context.equalsIgnoreCase("RelatedIdentifierfield")) {
+                            try {
+                                RelatedIdentifierField d = record.getRelatedIdentifiers().getLast();
+                                d.setRelatedIdentifierType(content);
+                            } catch (NoSuchElementException e) {
+                                    throw new HosSolrParseException("RelatedIdentifierType was set but no RelatedIdentifier was defined before! ");
+                            }
+                            wasProcessed = true;
+                        }
+                        
+                        // store RelationType. assume former RelatedIdentifier field
+                        if (context.equalsIgnoreCase("relationtype")) {
+                            try {
+                                RelatedIdentifierField d = record.getRelatedIdentifiers().getLast();
+                                d.setRelationType(content);
+                            } catch (NoSuchElementException e) {
+                                    throw new HosSolrParseException("RelationType was set but no RelatedIdentifier was defined before! ");
+                            }
+                            wasProcessed = true;
+                        }
+                        // weiter mit relatedMetadataScheme
+                        // Vorsicht danach: SchemeURI und SchemeType können 
+                        // wahrscheinlich an mehreren Stellen auftreten.
+                        // Kontext muss geklärt werden (was kam davo?)
+                        // oder erst einmal ohne?
+                        
+                        // unknown field? This isn't good. Die, die, die...
+                        if (!wasProcessed) {
+                            throw new HosSolrParseException("Unknown field: " + content);
+                        }
                     }
 
                 break;
