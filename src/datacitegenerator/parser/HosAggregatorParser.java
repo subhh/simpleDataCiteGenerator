@@ -9,16 +9,25 @@ import datacitegenerator.DataCiteRecord;
 import datacitegenerator.FieldTypes.AlternateIdentifierField;
 import datacitegenerator.FieldTypes.CreatorField;
 import datacitegenerator.FieldTypes.DateField;
+import datacitegenerator.FieldTypes.DescriptionField;
+import datacitegenerator.FieldTypes.FormatField;
+import datacitegenerator.FieldTypes.GeoLocationField;
+import datacitegenerator.FieldTypes.GeoLocationPointField;
 import datacitegenerator.FieldTypes.IdentifierField;
 import datacitegenerator.FieldTypes.LanguageField;
 import datacitegenerator.FieldTypes.PublicationYearField;
 import datacitegenerator.FieldTypes.PublisherField;
 import datacitegenerator.FieldTypes.RelatedIdentifierField;
+import datacitegenerator.FieldTypes.ResourceTypeField;
+import datacitegenerator.FieldTypes.RightsField;
+import datacitegenerator.FieldTypes.SizeField;
 import datacitegenerator.FieldTypes.TitleField;
 import datacitegenerator.FieldTypes.SubjectField;
+import datacitegenerator.FieldTypes.VersionField;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -91,97 +100,81 @@ public class HosAggregatorParser extends DataCiteGeneratorParser {
                     
                     if(in_context) { 
                         in_context = false;
-                        boolean wasProcessed = false;
                         
                         // do nothing with collections
                         if (context.equalsIgnoreCase("collection")) {
-                            wasProcessed = true;
-                        };
+                        } 
                         
                         // store identifier directly
-                        if (context.equalsIgnoreCase("identifier")) {
+                        else if (context.equalsIgnoreCase("identifier")) {
                             IdentifierField id = new IdentifierField();
                             id.setValue(content);
                             record.setIdentifier(id);
-                            wasProcessed = true;
-                        }
+                        } 
                         
                         // store identifierField. Asume identifier field.
-                        if (context.equalsIgnoreCase("identifierfield")) {
+                        else if (context.equalsIgnoreCase("identifiertype")) {
                             IdentifierField id = record.getIdentifier();
                             if (id == null) {
-                                throw new HosSolrParseException("identifierField found but no identifier specified.");
+                                throw new HosSolrParseException("identifierType found but no identifier specified.");
                             }
                             id.setIdentifierType(content);
                             record.setIdentifier(id);
-                            wasProcessed = true;
-                        }
+                        } 
                         
                         // store creatorName
-                        if (context.equalsIgnoreCase("creatorname")) {
+                        else if (context.equalsIgnoreCase("creatorname")) {
                             CreatorField creator = new CreatorField();
                             creator.setCreatorName(content);
                             record.addCreator(creator);
-                            wasProcessed = true;
                         }
                         
                         // store title(s)
-                        if (context.equalsIgnoreCase("title")) {
+                        else if (context.equalsIgnoreCase("title")) {
                             TitleField t = new TitleField();
                             t.setValue(content);
                             record.addTitle(t);
-                            wasProcessed = true;
                         }
                         
                         // store title language
-                        if (context.equalsIgnoreCase("titlelang")) {
+                        else if (context.equalsIgnoreCase("titlelang")) {
                             try {
                                 TitleField t = record.getTitles().getLast();
                                 t.setTitleLanguage(content);
                             } catch (NoSuchElementException e) {
                                     throw new HosSolrParseException("Title lang was set but no title was defined before! ");
                             }
-                            wasProcessed = true;
                         }
                         
                         // store publisher
-                        if (context.equalsIgnoreCase("publisher")) {
+                        else if (context.equalsIgnoreCase("publisher")) {
                             PublisherField p = new PublisherField();
                             p.setValue(content);
                             record.setPublisher(p);
-                            wasProcessed = true;
                         }
 
                         // store publication year
-                        if (context.equalsIgnoreCase("publicationyear")) {
+                        else if (context.equalsIgnoreCase("publicationyear")) {
                             PublicationYearField p = new PublicationYearField();
                             p.setValue(content);
                             record.setPublicationYear(p);
-                            wasProcessed = true;
                         }
                         
                         // do nothing with university
-                        if (context.equalsIgnoreCase("university")) {
-                            wasProcessed = true;
-                        };
+                        else if (context.equalsIgnoreCase("university")) {}
                         
                         // do nothing with institute
-                        if (context.equalsIgnoreCase("institut")) {
-                            wasProcessed = true;
-                        };
-                        if (context.equalsIgnoreCase("institute")) {
-                            wasProcessed = true;
-                        };
+                        else if (context.equalsIgnoreCase("institut")) {}
+                        else if (context.equalsIgnoreCase("institute")) {}
                         
                         // store subjects
-                        if (context.equalsIgnoreCase("subject")) {
+                        else if (context.equalsIgnoreCase("subject")) {
                             SubjectField s = new SubjectField();
                             s.setValue(content);
                             record.addSubjectField(s);
-                            wasProcessed = true;
                         }                
                         
-                        if (context.equalsIgnoreCase("subjectddc")) {
+                        else if (context.equalsIgnoreCase("subject_ddc")) {
                             SubjectField s = new SubjectField();
                             s.setValue(content);
                             s.setSubjectScheme("DDC");
@@ -189,104 +182,175 @@ public class HosAggregatorParser extends DataCiteGeneratorParser {
                                 s.setSchemeURI(new URI("https://www.oclc.org/en/dewey.html"));
                             } catch (Exception e) {};
                             record.addSubjectField(s);
-                            wasProcessed = true;
                         }                
                         
                         // store dates
-                        if (context.equalsIgnoreCase("date")) {
+                        else if (context.equalsIgnoreCase("date")) {
                             DateField d = new DateField();
                             d.setValue(content);
                             record.addDateField(d);
-                            wasProcessed = true;
                         }   
                         
                         // store dateType. assume former date field
-                        if (context.equalsIgnoreCase("datetype")) {
+                        else if (context.equalsIgnoreCase("datetype")) {
                             try {
                                 DateField d = record.getDates().getLast();
                                 d.setDateType(content);
                             } catch (NoSuchElementException e) {
                                     throw new HosSolrParseException("dateType was set but no date was defined before! ");
                             }
-                            wasProcessed = true;
                         }
 
                         // store dateInformation. assume former date field
-                        if (context.equalsIgnoreCase("dateinformation")) {
+                        else if (context.equalsIgnoreCase("dateinformation")) {
                             try {
                                 DateField d = record.getDates().getLast();
                                 d.setDateInformation(content);
                             } catch (NoSuchElementException e) {
-                                    throw new HosSolrParseException("dateInfomration was set but no date was defined before! ");
+                                    throw new HosSolrParseException("dateInformation was set but no date was defined before! ");
                             }
-                            wasProcessed = true;
                         }
                         
                         // store language
-                        if (context.equalsIgnoreCase("language")) {
+                        else if (context.equalsIgnoreCase("language")) {
                             LanguageField l = new LanguageField();
                             l.setValue(content);
                             record.setLanguage(l);
-                            wasProcessed = true;
                         }
                         
                         // store alternateIdentifier
-                        if (context.equalsIgnoreCase("alternateidentifier")) {
+                        else if (context.equalsIgnoreCase("alternateidentifier")) {
                             AlternateIdentifierField d = new AlternateIdentifierField();
                             d.setValue(content);
                             record.addAlternateIdentifier(d);
-                            wasProcessed = true;
                         }   
                         
                         // store AlternateIdentifierType. assume former AlternateIdentifier field
-                        if (context.equalsIgnoreCase("AlternateIdentifierfield")) {
+                        else if (context.equalsIgnoreCase("AlternateIdentifierfield")) {
                             try {
                                 AlternateIdentifierField d = record.getAlternateIdentifiers().getLast();
                                 d.setAlternateIdentifierType(content);
                             } catch (NoSuchElementException e) {
                                     throw new HosSolrParseException("AlternateIdentifierType was set but no alternateIdentifier was defined before! ");
                             }
-                            wasProcessed = true;
                         }
                         
                         // store relatedIdentifier
-                        if (context.equalsIgnoreCase("relatedidentifier")) {
+                        else if (context.equalsIgnoreCase("relatedidentifier")) {
                             RelatedIdentifierField d = new RelatedIdentifierField();
                             d.setValue(content);
                             record.addRelatedIdentifier(d);
-                            wasProcessed = true;
                         }   
                         
                         // store RelatedIdentifierType. assume former RelatedIdentifier field
-                        if (context.equalsIgnoreCase("RelatedIdentifierfield")) {
+                        else if (context.equalsIgnoreCase("RelatedIdentifierfield")) {
                             try {
                                 RelatedIdentifierField d = record.getRelatedIdentifiers().getLast();
                                 d.setRelatedIdentifierType(content);
                             } catch (NoSuchElementException e) {
                                     throw new HosSolrParseException("RelatedIdentifierType was set but no RelatedIdentifier was defined before! ");
                             }
-                            wasProcessed = true;
                         }
                         
                         // store RelationType. assume former RelatedIdentifier field
-                        if (context.equalsIgnoreCase("relationtype")) {
+                        else if (context.equalsIgnoreCase("relationtype")) {
                             try {
                                 RelatedIdentifierField d = record.getRelatedIdentifiers().getLast();
                                 d.setRelationType(content);
                             } catch (NoSuchElementException e) {
                                     throw new HosSolrParseException("RelationType was set but no RelatedIdentifier was defined before! ");
                             }
-                            wasProcessed = true;
                         }
-                        // weiter mit relatedMetadataScheme
+                        //  eigentlich weiter mit relatedMetadataScheme
                         // Vorsicht danach: SchemeURI und SchemeType können 
                         // wahrscheinlich an mehreren Stellen auftreten.
                         // Kontext muss geklärt werden (was kam davo?)
                         // oder erst einmal ohne?
+
+                        // store size
+                        else if (context.equalsIgnoreCase("size")) {
+                            SizeField d = new SizeField();
+                            d.setValue(content);
+                            record.addSize(d);
+                        } 
+                        
+                        // store format
+                        else if (context.equalsIgnoreCase("format")) {
+                            FormatField d = new FormatField();
+                            d.setValue(content);
+                            record.addFormat(d);
+                        } 
+                        
+                        // store version
+                        else if (context.equalsIgnoreCase("version")) {
+                            VersionField d = new VersionField();
+                            d.setValue(content);
+                            record.setVersion(d);
+                        } 
+                        
+                        // store rights
+                        else if (context.equalsIgnoreCase("rights")) {
+                            RightsField d = new RightsField();
+                            d.setValue(content);
+                            record.addRights(d);
+                        }   
+                        
+                        // store rightsURI. assume former date field
+                        else if (context.equalsIgnoreCase("rightsuri")) {
+                            try {
+                                RightsField d = record.getRights().getLast();
+                                d.setRightsURI(new URI(content));
+                            } catch (NoSuchElementException e) {
+                                    throw new HosSolrParseException("rightsURI was set but no rights were defined before! ");
+                            } catch (URISyntaxException e) {
+                                    throw new HosSolrParseException("URI could no be generated: " + content);
+                            }
+                        }
+                        
+                        // store resourceType
+                        else if (context.equalsIgnoreCase("resourceType")) {
+                            ResourceTypeField d = new ResourceTypeField();
+                            d.setValue(content);
+                            record.setResourceType(d);
+                        }   
+                        
+                        // store resourceTypeGeneral. assume former resourceType field
+                        else if (context.equalsIgnoreCase("resourceTypeGeneral")) {
+                            try {
+                                ResourceTypeField d = record.getResourceType();
+                                d.setResourceTypeGeneral(content);
+                            } catch (NoSuchElementException e) {
+                                    throw new HosSolrParseException("resourceTypeGeneral was set but no resourceType was defined before! ");
+                            }
+                        }
+                        
+                        // ignore url
+                        else if (context.equalsIgnoreCase("url")) {}
+                        
+                        // geoLocationPoints
+                        else if (context.equalsIgnoreCase("geolocationpoint")) {
+                            String[] parts = content.split(",");
+                            String lat = parts[0];
+                            String lgt = parts[1];
+                            GeoLocationField geo = new GeoLocationField();
+                            GeoLocationPointField pnt = new GeoLocationPointField();
+                            pnt.setPointLatitude(lat);
+                            pnt.setPointLongitude(lgt);
+                            geo.addGeolocationPoint(pnt);
+                            record.addGeolocation(geo);
+                        }
+                        
+                        // store description
+                        else if (context.equalsIgnoreCase("description")) {
+                            DescriptionField d = new DescriptionField();
+                            d.setValue(content);
+                            record.addDescription(d);
+                        }  
                         
                         // unknown field? This isn't good. Die, die, die...
-                        if (!wasProcessed) {
-                            throw new HosSolrParseException("Unknown field: " + content);
+                        else {
+                            throw new HosSolrParseException("Unknown field: " + 
+                                    context + " with content: " + content);
                         }
                     }
 
