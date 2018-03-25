@@ -94,7 +94,7 @@ public class DataCiteGenerator {
             //String formattedNumber = String.format("%03d", yourInteger);
             
             // end after 10 records for testing purposes
-            if (i > 9) { break; }
+            //if (i > 9) { break; }
         }
 
         

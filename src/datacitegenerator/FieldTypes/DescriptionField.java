@@ -38,13 +38,13 @@ public class DescriptionField extends DataciteField {
         if (this.language != null) {
             Attr attr = doc.createAttribute("xml:lang");
             attr.setValue(this.language);
-            field.appendChild(attr);
+            field.setAttributeNode(attr);
         }
 
         if (this.descriptionType != null) {
             Attr attr = doc.createAttribute("descriptionType");
             attr.setValue(this.descriptionType);
-            field.appendChild(attr);
+            field.setAttributeNode(attr);
         }
         
         if(this.getValue() != null) {
