@@ -40,7 +40,7 @@ public class RightsField extends DataciteField {
         if (this.rightsURI != null) {
             Attr attr = doc.createAttribute("rightsURI");
             attr.setValue(rightsURI.toString());
-            field.appendChild(attr);
+            field.setAttributeNode(attr);
         }
         
         return field;

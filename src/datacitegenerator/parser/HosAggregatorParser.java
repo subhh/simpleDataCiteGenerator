@@ -6,24 +6,7 @@
 package datacitegenerator.parser;
 
 import datacitegenerator.DataCiteRecord;
-import datacitegenerator.FieldTypes.AlternateIdentifierField;
-import datacitegenerator.FieldTypes.CreatorField;
-import datacitegenerator.FieldTypes.DateField;
-import datacitegenerator.FieldTypes.DescriptionField;
-import datacitegenerator.FieldTypes.FormatField;
-import datacitegenerator.FieldTypes.GeoLocationField;
-import datacitegenerator.FieldTypes.GeoLocationPointField;
-import datacitegenerator.FieldTypes.IdentifierField;
-import datacitegenerator.FieldTypes.LanguageField;
-import datacitegenerator.FieldTypes.PublicationYearField;
-import datacitegenerator.FieldTypes.PublisherField;
-import datacitegenerator.FieldTypes.RelatedIdentifierField;
-import datacitegenerator.FieldTypes.ResourceTypeField;
-import datacitegenerator.FieldTypes.RightsField;
-import datacitegenerator.FieldTypes.SizeField;
-import datacitegenerator.FieldTypes.TitleField;
-import datacitegenerator.FieldTypes.SubjectField;
-import datacitegenerator.FieldTypes.VersionField;
+import datacitegenerator.FieldTypes.*;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.net.URI;
@@ -346,6 +329,19 @@ public class HosAggregatorParser extends DataCiteGeneratorParser {
                             d.setValue(content);
                             record.addDescription(d);
                         }  
+                        
+                        // store descriptionType. assume former description field
+                        else if (context.equalsIgnoreCase("descriptiontype")) {
+                            try {
+                                DescriptionField d = record.getDescriptions().getLast();
+                                d.setDescriptionType(content);
+                            } catch (NoSuchElementException e) {
+                                    throw new HosSolrParseException("descriptionType was set but no description was defined before! ");
+                            }
+                        }
+                        
+                        //TODO: Treat source fields!
+                        else if (context.equalsIgnoreCase("source")) {}
                         
                         // unknown field? This isn't good. Die, die, die...
                         else {
