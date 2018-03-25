@@ -27,6 +27,8 @@ Since the DataCite Format only allows for one record per file, Outputfiles are s
 Currently, only "HosAggregator" is a valid option for the parser name. Feel free to create your own parsers.
 
 ## Upcomming features
-* Finishing the HOSAggregatorParser
+* Finish the HOSAggregatorParser
+* treat "source" field
 * JSON export
 * MySQL support
+
