@@ -42,7 +42,7 @@ public class HosSUBEdissParser extends DataCiteGeneratorParser {
     @Override
     public void parse() {
 
-        DataCiteRecord record = null;
+        DataCiteRecord record = new DataCiteRecord();
         
         String context = "";
         boolean in_context = false;
@@ -160,7 +160,7 @@ public class HosSUBEdissParser extends DataCiteGeneratorParser {
                             s.setSubjectScheme("DDC");
                             try {
                                 s.setSchemeURI(new URI("https://www.oclc.org/en/dewey.html"));
-                            } catch (Exception e) {};
+                            } catch (URISyntaxException e) {}
                             record.addSubjectField(s);
                         }                
                         
@@ -360,8 +360,7 @@ public class HosSUBEdissParser extends DataCiteGeneratorParser {
                 break;
                 } 
             }
-        } catch (FileNotFoundException e) { e.printStackTrace();} 
-          catch (XMLStreamException e) { e.printStackTrace();}
+        } catch (FileNotFoundException | XMLStreamException e) { e.printStackTrace();}
     }
 
     @Override

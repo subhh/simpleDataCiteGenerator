@@ -45,13 +45,13 @@ public class GeoLocationPointField extends DataciteField {
     public Element createXML(Document doc){
         Element field = doc.createElement(this.getName());
         
-        if (this.pointLatitude == null) {            
+        if (this.pointLatitude != null) {            
             Element n = doc.createElement("pointLatitude");
             n.appendChild(doc.createTextNode(this.pointLatitude));
             field.appendChild(n);
         }
         
-        if (this.pointLongitude == null) {            
+        if (this.pointLongitude != null) {            
             Element n = doc.createElement("pointLongitude");
             n.appendChild(doc.createTextNode(this.pointLongitude));
             field.appendChild(n);
