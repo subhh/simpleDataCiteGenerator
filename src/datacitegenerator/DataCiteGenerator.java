@@ -7,7 +7,7 @@ package datacitegenerator;
 
 import datacitegenerator.FieldTypes.*;
 import datacitegenerator.parser.DataCiteGeneratorParser;
-import datacitegenerator.parser.HosAggregatorParser;
+import datacitegenerator.parser.HosSUBEdissParser;
 
 import java.io.File;
 import java.util.List;
@@ -34,7 +34,7 @@ public class DataCiteGenerator {
         output.setRequired(true);
         options.addOption(output);
 
-        Option parseropt = new Option("p", "parser", true, "parser to use. Option(s): HosAggregator");
+        Option parseropt = new Option("p", "parser", true, "parser to use. Option(s): HosSUBEdiss");
         parseropt.setRequired(true);
         options.addOption(parseropt);
         
@@ -55,13 +55,12 @@ public class DataCiteGenerator {
         String inputFilePath = cmd.getOptionValue("input");
         String outputFilePath = cmd.getOptionValue("output");
         String parserName = cmd.getOptionValue("parser");
-;
         
         DataCiteGeneratorParser p = null;
         
         switch (parserName) {
-            case "HosAggregator":
-                p = new HosAggregatorParser();
+            case "HosSUBEDiss":
+                p = new HosSUBEdissParser();
                 break;
             
             default: 

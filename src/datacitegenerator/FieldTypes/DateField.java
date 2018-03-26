@@ -50,7 +50,6 @@ public class DateField extends DataciteField {
         h_types.put("Updated", "true");        
         h_types.put("Valid", "true");        
         h_types.put("Other", "true");
-        
     }
     
     @Override
@@ -62,14 +61,12 @@ public class DateField extends DataciteField {
         
         if (dateType == null) {
             r = r.concat(this.getName() + ": No dateType defined.\n");
-        } else {
-            if (h_types.get(dateInformation) == null) {
-                r = r.concat(this.getName() 
-                        + " "
-                        + dateInformation
-                        + " "
-                        + " : Wrong dateInformation.\n");
-            }
+        } else if (h_types.get(dateType) != "true") {
+            r = r.concat(this.getName() 
+                + ", "
+                + dateType
+                + " "
+                + " : Wrong dateType\n");
         }
         
         return r;

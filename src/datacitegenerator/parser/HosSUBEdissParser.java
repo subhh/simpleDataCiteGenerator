@@ -30,11 +30,11 @@ import javax.xml.stream.events.XMLEvent;
  *
  * @author jfmaas
  */
-public class HosAggregatorParser extends DataCiteGeneratorParser {
+public class HosSUBEdissParser extends DataCiteGeneratorParser {
     
     LinkedList<DataCiteRecord> myRecords = new LinkedList<>();
 
-    public HosAggregatorParser() {
+    public HosSUBEdissParser() {
         inputfile = null;
         outputfile = null;
     }
@@ -63,9 +63,6 @@ public class HosAggregatorParser extends DataCiteGeneratorParser {
                     
                     // doc beginning? finish old record, create new record
                     if(qName.equalsIgnoreCase("doc")) { 
-                        if (record != null) {
-                            myRecords.add(record);
-                        }
                         record = new DataCiteRecord();
                     }
                     
@@ -171,6 +168,7 @@ public class HosAggregatorParser extends DataCiteGeneratorParser {
                         else if (context.equalsIgnoreCase("date")) {
                             DateField d = new DateField();
                             d.setValue(content);
+                            d.setDateType("Issued");
                             record.addDateField(d);
                         }   
                         
